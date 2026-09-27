@@ -190,3 +190,34 @@ FIREBASE_CREDENTIALS_JSON = env("FIREBASE_CREDENTIALS_JSON", "")
 # --- Backups -----------------------------------------------------------
 DB_BACKUP_DIR = env("DB_BACKUP_DIR", str(BASE_DIR / "backups"))
 DB_BACKUP_RETENTION_DAYS = int(env("DB_BACKUP_RETENTION_DAYS", 30))
+
+# --- Logging -----------------------------------------------------------
+# By default, Django only emails 500 tracebacks to ADMINS when DEBUG=False,
+# which we haven't configured — so without this, server errors vanish
+# silently instead of appearing in Render's logs. This prints them to
+# stdout/stderr instead, which Render captures.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
